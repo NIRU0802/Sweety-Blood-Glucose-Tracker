@@ -5,6 +5,7 @@ import { useAuth } from '../AuthContext';
 import api, { errorMessage, slotLabel, todayLocal, valueStatus } from '../api';
 import ReadingForm from '../components/ReadingForm';
 import Reports from '../components/Reports';
+import TrendChart from '../components/TrendChart';
 
 // One icon per slot, looked up by the slot's enum value
 const SLOT_ICONS = {
@@ -19,7 +20,7 @@ export default function Dashboard() {
   const [date, setDate] = useState(todayLocal());
   const [readings, setReadings] = useState([]);
   const [editing, setEditing] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0); // bump to make list + reports reload
+  const [refreshKey, setRefreshKey] = useState(0); // bump to reload list, chart and reports
 
   const load = useCallback(async () => {
     try {
@@ -47,8 +48,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      {/* Top bar */}
-      <header className="border-b border-slate-100 bg-white">
+      {/* Sticky top bar with frosted-glass effect */}
+      <header className="sticky top-0 z-10 border-b border-slate-100 bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-rose-500">
@@ -130,11 +131,9 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <h2 className="text-lg font-semibold">Reports</h2>
-        {/* Still uses the old styles until step 3, so wrap it in .container to keep them */}
-        <div className="container !p-0">
-          <Reports date={date} refreshKey={refreshKey} />
-        </div>
+        <h2 className="text-lg font-semibold">Insights</h2>
+        <TrendChart date={date} refreshKey={refreshKey} />
+        <Reports date={date} refreshKey={refreshKey} />
       </main>
     </div>
   );
