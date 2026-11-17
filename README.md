@@ -5,9 +5,28 @@ A web app where a diabetes patient records up to 4 blood glucose readings a day 
 **Stack:** Node.js, Express, PostgreSQL (`pg`), React (Vite), Tailwind CSS, Recharts, JWT + bcrypt, Jest + Supertest, Vitest + React Testing Library, Docker Compose (database).
 
 ## Screenshots
-![Login](screenshots/login.png)
-![Dashboard](screenshots/dashboard.png)
-![Reports](screenshots/reports.png)
+
+| Login | Sign up |
+|---|---|
+| ![Login](screenshots/login.jpg) | ![Sign up](screenshots/signup.jpg) |
+
+**Dashboard: add a reading and view the day's readings**
+![Dashboard](screenshots/dashboard.jpg)
+
+**Validation error shown in the UI**
+![Validation error](screenshots/validation.jpg)
+
+**Monthly trend chart**
+![Trend chart](screenshots/chart.jpg)
+
+**Daily, month-to-date and previous-month reports**
+![Reports](screenshots/reports.jpg)
+
+**Friendly empty state (no readings for the day)**
+![Empty state](screenshots/empty-state.jpg)
+
+**Full page (mobile width)**
+![Full dashboard](screenshots/dashboard-full.png)
 
 ## Features
 - Sign up / log in (bcrypt-hashed passwords, JWT)
