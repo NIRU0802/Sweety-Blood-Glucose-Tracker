@@ -2,14 +2,22 @@
 
 A web app where a diabetes patient records up to 4 blood glucose readings a day and views daily, month-to-date and monthly reports.
 
-**Stack:** Node.js, Express, PostgreSQL (`pg`), React (Vite), JWT + bcrypt, Jest + Supertest, Docker Compose (database).
+**Stack:** Node.js, Express, PostgreSQL (`pg`), React (Vite), Tailwind CSS, Recharts, JWT + bcrypt, Jest + Supertest, Vitest + React Testing Library, Docker Compose (database).
+
+## Screenshots
+![Login](screenshots/login.png)
+![Dashboard](screenshots/dashboard.png)
+![Reports](screenshots/reports.png)
 
 ## Features
 - Sign up / log in (bcrypt-hashed passwords, JWT)
 - Add, view, edit, delete readings (4 slots per day)
-- Validation with clear error messages
-- Daily, month-to-date and previous-month reports (highest, lowest, average, count, empty state)
-- Pagination on `GET /api/readings?page=1&limit=20`
+- Validation with clear error messages shown in the UI
+- Daily, month-to-date and previous-month reports (highest, lowest, average, count, friendly empty state)
+- Monthly trend chart (Recharts) with a shaded 70–180 mg/dl band
+- Color-coded readings (illustrative ranges, not medical advice)
+- Pagination and date-range filtering on `GET /api/readings`
+- Backend tests (Jest + Supertest) and frontend tests (Vitest + React Testing Library)
 
 ## Prerequisites
 Node.js 18+ (20 LTS recommended), npm, and either Docker Desktop or a local PostgreSQL 14+.
@@ -48,11 +56,18 @@ npm run dev               # http://localhost:5173
 ```
 
 ### 4. Tests
+
+Backend (uses the `TEST_DATABASE_URL` database and truncates its tables):
 ```bash
 cd server
 npm test
 ```
-Tests use the `TEST_DATABASE_URL` database and truncate its tables.
+
+Frontend (reading form tests, no database needed):
+```bash
+cd client
+npm test
+```
 
 ## Demo login
 `demo@sweety.test` / `Demo@123`
@@ -72,7 +87,7 @@ Tests use the `TEST_DATABASE_URL` database and truncate its tables.
 |---|---|---|
 | POST | /api/auth/register | Sign up |
 | POST | /api/auth/login | Log in, returns JWT |
-| GET | /api/readings | List own readings (`date`, `page`, `limit`) |
+| GET | /api/readings | List own readings (`date`, `from`+`to`, `page`, `limit`) |
 | POST | /api/readings | Add reading |
 | PUT | /api/readings/:id | Edit reading |
 | DELETE | /api/readings/:id | Delete reading |
@@ -87,12 +102,15 @@ Tests use the `TEST_DATABASE_URL` database and truncate its tables.
 - With 4 slots and one reading per slot per day, the "max 4 per day" rule can never trigger before the duplicate-slot rule. Both are implemented, and the database has `UNIQUE (user_id, reading_date, slot)` as a safety net.
 - "Monthly" means the whole previous month relative to the selected date (January goes to December of the previous year).
 - Average is rounded to 1 decimal; empty periods return nulls and the UI shows an empty state.
+- The value status colors (Low under 70, In range 70–180, High up to 250) and the chart band are illustrative only, not medical advice.
 - JWT is stored in `localStorage` for simplicity. Password minimum is 6 characters.
+- Vitest is pinned to v2 because the project uses Vite 5.
 - `npm audit` warnings come from dev dependencies and old transitive packages; I did not force-upgrade them.
 
 ### What I'd improve with more time
-- HttpOnly cookies, refresh tokens, login rate limiting
-- Frontend tests (React Testing Library) and more edge-case API tests
-- Line chart of readings (Recharts) and a pagination UI
-- Dockerfiles for the app, CI pipeline
+- HttpOnly cookies, refresh tokens, login rate limiting, `helmet`
+- More edge-case API tests and frontend tests for the dashboard and auth page
+- A pagination UI on the readings list
+- Dockerfiles for the app and a CI pipeline (GitHub Actions)
+- Deployment (Render + Neon + Vercel)
 - Doctor role, Redis caching, BullMQ reminders
